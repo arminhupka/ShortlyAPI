@@ -2,9 +2,12 @@
   "name": "shortly-api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "arminhupka",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "16.13.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -18,7 +21,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
