@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { NewLinkDto } from './dto/new-link.dto';
@@ -6,8 +10,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Link, LinkDocument } from '../schemas/link.schema';
 import { AllLinksResponseInterface } from './interfaces/all-links-response.interface';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
-import { map } from 'rxjs';
 import { parser } from 'html-metadata-parser';
 
 @Injectable()
@@ -18,20 +20,24 @@ export class LinksService {
   ) {}
 
   async shortLink(newLinkDto: NewLinkDto): Promise<any> {
-    const {
-      meta: { title },
-    } = await parser(newLinkDto.url);
+    try {
+      const {
+        meta: { title },
+      } = await parser(newLinkDto.url);
 
-    const newLink = await this.linkDocument.create({
-      url: newLinkDto.url,
-      title,
-      slug: nanoid(7),
-    });
-    //
-    return {
-      message: 'Link shorted',
-      data: newLink,
-    };
+      const newLink = await this.linkDocument.create({
+        url: newLinkDto.url,
+        title,
+        slug: nanoid(7),
+      });
+
+      return {
+        message: 'Link shorted',
+        data: newLink,
+      };
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   async getRedirection(id: string) {

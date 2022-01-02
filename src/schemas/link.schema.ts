@@ -9,7 +9,7 @@ export class Link {
   @Prop({ required: true })
   slug: string;
 
-  @Prop({ required: true })
+  @Prop()
   title: string;
 
   @Prop({ default: 0 })
