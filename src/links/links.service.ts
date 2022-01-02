@@ -1,23 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { NewLinkDto } from './dto/new-link.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Link, LinkDocument } from '../schemas/link.schema';
 import { AllLinksResponseInterface } from './interfaces/all-links-response.interface';
+import { HttpService } from '@nestjs/axios';
+import { AxiosResponse } from 'axios';
+import { map } from 'rxjs';
+import { parser } from 'html-metadata-parser';
 
 @Injectable()
 export class LinksService {
   constructor(
+    private httpService: HttpService,
     @InjectModel(Link.name) private readonly linkDocument: Model<LinkDocument>,
   ) {}
 
-  async shortLink(newLinkDto: NewLinkDto) {
+  async shortLink(newLinkDto: NewLinkDto): Promise<any> {
+    const {
+      meta: { title },
+    } = await parser(newLinkDto.url);
+
     const newLink = await this.linkDocument.create({
       url: newLinkDto.url,
+      title,
       slug: nanoid(7),
     });
-
+    //
     return {
       message: 'Link shorted',
       data: newLink,

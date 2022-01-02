@@ -9,6 +9,9 @@ export class Link {
   @Prop({ required: true })
   slug: string;
 
+  @Prop({ required: true })
+  title: string;
+
   @Prop({ default: 0 })
   visits: number;
 }
