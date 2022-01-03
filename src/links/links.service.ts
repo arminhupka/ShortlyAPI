@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 import { NewLinkDto } from './dto/new-link.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Link, LinkDocument } from '../schemas/link.schema';
@@ -20,6 +20,8 @@ export class LinksService {
   ) {}
 
   async shortLink(newLinkDto: NewLinkDto): Promise<any> {
+    const nanoid = customAlphabet('abcdefghijklmnopqrstuwxyz0123456789', 7);
+
     try {
       const {
         meta: { title },
@@ -28,7 +30,7 @@ export class LinksService {
       const newLink = await this.linkDocument.create({
         url: newLinkDto.url,
         title,
-        slug: nanoid(7),
+        slug: nanoid(),
       });
 
       return {
